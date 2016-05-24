@@ -1,5 +1,5 @@
+import firebaseConnection
 import urllib.request as request
-from firebase import firebase as firebase
 from bs4 import BeautifulSoup
 
 ## python tutorial
@@ -62,8 +62,8 @@ def printBloodBankInformations(bloodbank):
         print("\t" + i.text)
 
 def uploadBloodBank(bloodbanks_dict):
-    firebase_conn = firebase.FirebaseApplication("https://hemocentrosapp.firebaseio.com/")
-    result = firebase_conn.post('HemocentrosBR' , bloodbanks_dict)
+    conn = firebaseConnection.getConnection()
+    result = conn.post(firebaseConnection.getTable() , bloodbanks_dict)
     if(result != None):
         print("inserted")
     else:
