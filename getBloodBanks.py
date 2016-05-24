@@ -1,41 +1,73 @@
 import urllib.request as request
+from firebase import firebase as firebase
 from bs4 import BeautifulSoup
+
+## python tutorial
+## http://ozgur.github.io/python-firebase/
+bloodbanks = {}
 
 def main():
 
-    estados = {}
-    cidades = {}
-    # site = request.urlopen('http://www.prosangue.sp.gov.br/hemocentros/').read()
-    # file = open('hemocentros.html' , 'w')
-    # file.truncate()
-    # file.write(str(site))
-    site = open("hemocentros.html")
-    cidades = site.split('/><h3>&bull; ')
+    file = open("hemocentros.html").read()
+    cidades = file.split('/><h3>&bull; ')
     cidades.pop(0)
-    for cidade in cidades:
-        listaCidades = cidade.split('<li>')[1][:-11]
-        hemocentros = cidade.split('</h3>')[1]
-        hemocentros_soup = BeautifulSoup(hemocentros , 'html.parser')
+    hemocentros = str(cidades).split('<input type="hidden"')
+    
+    for i , info in enumerate(hemocentros):
+        if(i > 0):
+            try:
+                informacoes = info.split("</h3>") 
+                estado = informacoes[0]
+                estado = str(estado[2:]).split("', '")[1]
+                bsoup = BeautifulSoup(str(informacoes[1]) , 'html.parser')                
+                bloodbanks[estado] = (getAllStateBloodBanks(bsoup , estado))
+            except Exception as e:
+                print (e)
+        else:
+            try:
+                informacoes = info.split("</h3>") 
+                estado = informacoes[0][2:]
+                bsoup = BeautifulSoup(str(informacoes[1]) , 'html.parser')                
+                bloodbanks[estado] = getAllStateBloodBanks(bsoup , estado)
+            except Exception as e:
+                print (e)
 
-        hemocentros = hemocentros_soup('ul' , {'class' : 'nostyle'})
-        
+    uploadBloodBank(bloodbanks)
 
-        estados = str(cidade.replace('</h3>' , ', <!h3!>').split('<!h3!>')[0])
-        estados = estados.split(',')
+def createStateBloodBanksDict(bsoup):
+    blood = {
+        'Name'  :   bsoup.h4.text,
+        'Address'   :   bsoup.findAll('p')[0].text,
+        'District'  :   bsoup.findAll('p')[1].text,
+        'City'  :   bsoup.findAll('p')[2].text,
+        'Phone' :   bsoup.findAll('p')[3].text,
+    }
 
-        for estado in estados:
-            if(estado != ' '):
-                estados = estado;
-        
-        for hemocentro in hemocentros:
-            soup = BeautifulSoup(str(hemocentros) , 'html.parser')
-            informacoes = soup.findAll('p')
-            print(soup.h4.text)
-            print(informacoes[0].text) #Endereço
-            print(informacoes[1].text) #Bairro
-            print(informacoes[2].text) #Cidade
-            print(informacoes[3].text) #telefone
-            print('----------------------------------')
+    return blood
+
+def getAllStateBloodBanks(bsoup , state):
+    bloodStates = []
+    for hemocentro in bsoup('li'):
+        bloodStates.append(createStateBloodBanksDict(hemocentro))
+        # print (printBloodBankInformations(hemocentro))
+    # print("\n")
+
+    return bloodStates
+
+def printBloodBankInformations(bloodbank):
+    nome = bloodbank.h4.text
+    info = bloodbank.findAll('p')
+    print("Nome hemocentro > " + nome)
+    for i in info[:-1]:
+        print("\t" + i.text)
+
+def uploadBloodBank(bloodbanks_dict):
+    firebase_conn = firebase.FirebaseApplication("https://hemocentrosapp.firebaseio.com/")
+    result = firebase_conn.post('HemocentrosBR' , bloodbanks_dict)
+    if(result != None):
+        print("inserted")
+    else:
+        print("Error")
 
 if __name__ == '__main__':
     main()
