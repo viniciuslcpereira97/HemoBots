@@ -1,3 +1,4 @@
+from unidecode import unidecode
 import firebaseConnection
 import urllib.request as request
 from bs4 import BeautifulSoup
@@ -8,8 +9,8 @@ bloodbanks = {}
 
 def main():
 
-    file = open("hemocentros.html").read()
-    cidades = file.split('/><h3>&bull; ')
+    site = str(request.urlopen('http://www.prosangue.sp.gov.br/hemocentros/').read())
+    cidades = site.split('/><h3>&bull; ')
     cidades.pop(0)
     hemocentros = str(cidades).split('<input type="hidden"')
     
@@ -18,7 +19,7 @@ def main():
             try:
                 informacoes = info.split("</h3>") 
                 estado = informacoes[0]
-                estado = str(estado[2:]).split("', '")[1]
+                estado = firebaseConnection.decode(str(estado[2:]).split("', '")[1])
                 bsoup = BeautifulSoup(str(informacoes[1]) , 'html.parser')                
                 bloodbanks[estado] = (getAllStateBloodBanks(bsoup , estado))
             except Exception as e:
@@ -26,7 +27,8 @@ def main():
         else:
             try:
                 informacoes = info.split("</h3>") 
-                estado = informacoes[0][2:]
+                estado = unidecode(str(informacoes[0][2:]))
+                print(estado)
                 bsoup = BeautifulSoup(str(informacoes[1]) , 'html.parser')                
                 bloodbanks[estado] = getAllStateBloodBanks(bsoup , estado)
             except Exception as e:
@@ -64,6 +66,7 @@ def printBloodBankInformations(bloodbank):
 def uploadBloodBank(bloodbanks_dict):
     conn = firebaseConnection.getConnection()
     result = conn.post(firebaseConnection.getTable() , bloodbanks_dict)
+
     if(result != None):
         print("inserted")
     else:
