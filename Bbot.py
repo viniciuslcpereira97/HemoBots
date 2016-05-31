@@ -1,7 +1,6 @@
-from unidecode import unidecode
 import firebaseConnection
-import urllib.request as request
 from bs4 import BeautifulSoup
+import urllib.request as request
 
 ## python tutorial
 ## http://ozgur.github.io/python-firebase/
