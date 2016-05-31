@@ -2,20 +2,30 @@ import firebaseConnection
 from bs4 import BeautifulSoup
 import urllib.request as request
 
+
+def uploadStagesDict(stages_list):
+    stages_dict = {'stages' : stages_list}
+
+    conn = firebaseConnection.getConnection()
+    result = conn.post(firebaseConnection.getStagesTable() , stages_dict)
+
+    if(result != None):
+        print("Inserted")
+    else:
+        print("Error")
+
 def getStageTitle(title):
     return_title = title.split('">')[1].split("</")
     return_title = str(return_title[0]).strip()
     return return_title
 
-def createStagesDict(order , title , description):
+def createStagesDict(title , description):
     return {
-        'stage_order'  :   order,
         'title' :   title,
         'description'   :   description
     }
 
 def main():
-    stages_dict = {}
     stages = []
     data = request.urlopen("http://www.prosangue.sp.gov.br/doacao/etapasdoacao.aspx").read()
     bsoup = BeautifulSoup(data , 'html.parser')
@@ -30,11 +40,9 @@ def main():
             description_bsoup = BeautifulSoup(str(bsoup('div' , {'class' : 'text'})) , 'html.parser')
             title = getStageTitle(title)
             description = description_bsoup.p.text.strip()
-            stages.append(createStagesDict(i, title , description))
+            stages.append(createStagesDict(title , description))
 
-    stages_dict = {'stages' : stages}
-
-    print(stages_dict)
+    uploadStagesDict(stages)
 
 if __name__ == "__main__":
     main()
