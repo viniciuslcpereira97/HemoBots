@@ -4,6 +4,7 @@ import urllib.request as request
 
 ## python tutorial
 ## http://ozgur.github.io/python-firebase/
+
 bloodbanks = {}
 
 def main():
@@ -50,8 +51,8 @@ def getAllStateBloodBanks(bsoup , state):
     bloodStates = []
     for hemocentro in bsoup('li'):
         bloodStates.append(createStateBloodBanksDict(hemocentro))
-        # print (printBloodBankInformations(hemocentro))
-    # print("\n")
+        print (printBloodBankInformations(hemocentro))
+    print("\n")
 
     return bloodStates
 
@@ -67,7 +68,7 @@ def uploadBloodBank(bloodbanks_dict):
     result = conn.post(firebaseConnection.getTable() , bloodbanks_dict)
 
     if(result != None):
-        print("inserted")
+        print("Inserted")
     else:
         print("Error")
 
