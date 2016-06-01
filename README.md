@@ -1,8 +1,8 @@
 # HemoBots
-HemoBots open the website "prosangue.sp.gov.br" and get some informations.
+HemoBots opens the website "prosangue.sp.gov.br" and gets some informations.
 
 ##Bbot
-Bbot open the website and provides all registered hemocenters in Brazil, after this, all hemocenters will be inserted on database.
+Bbot opens the website and provides all registered hemocenters in Brazil, after this, all hemocenters will be inserted on database.
 
 ##Sbot
-Sbot open the website and provides all stages to donate blood, after this, the stages will be inserted on database.
+Sbot opens the website and provides all stages to donate blood, after this, the stages will be inserted on database.
