@@ -1,7 +1,6 @@
 import time
 import firebaseConnection
 from urllib import request
-from firebase import firebase
 from bs4 import BeautifulSoup
 
 def main():
