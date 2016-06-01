@@ -6,3 +6,6 @@ Bbot opens the website and provides all registered hemocenters in Brazil, after 
 
 ##Sbot
 Sbot opens the website and provides all stages to donate blood, after this, the stages will be inserted on database.
+
+##Illum
+Illum checks for some new hemocenter on the site.
