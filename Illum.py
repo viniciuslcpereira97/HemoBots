@@ -1,12 +1,11 @@
 import time
-import firebaseConnection
+import BotConnections
 from urllib import request
 from bs4 import BeautifulSoup
 
 def main():
     
-    conn = firebaseConnection.getConnection()
-    result = conn.get(firebaseConnection.getHemocentersTable() , None)
+    result = BotConnections.getHemocentersTable()
     site_hemocenters = countSiteHemocenters()
     firebase_hemocenters = countFirebaseHemocenters(result)
 
@@ -22,8 +21,8 @@ def main():
 
 def countFirebaseHemocenters(firebase_result):
     firebase_hemocenters = 0
-    for state in firebase_result['-KJ1sgno9wwBzoTuz663']:
-        for hemocenter in firebase_result['-KJ1sgno9wwBzoTuz663'][state]:
+    for state in firebase_result['-KK9LtII4U0FtSyz4m4Y']:
+        for hemocenter in firebase_result['-KK9LtII4U0FtSyz4m4Y'][state]:
             firebase_hemocenters += 1
     return firebase_hemocenters
 

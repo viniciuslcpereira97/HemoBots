@@ -1,4 +1,4 @@
-import firebaseConnection
+import BotConnections
 from bs4 import BeautifulSoup
 import urllib.request as request
 
@@ -6,8 +6,8 @@ import urllib.request as request
 def uploadStagesDict(stages_list):
     stages_dict = {'stages' : stages_list}
 
-    conn = firebaseConnection.getConnection()
-    result = conn.post(firebaseConnection.getStagesTable() , stages_dict)
+    conn = BotConnections.getConnection()
+    result = conn.post(BotConnections.getStagesTable() , stages_dict)
 
     if(result != None):
         print("Inserted")
