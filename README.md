@@ -1,5 +1,5 @@
 # HemoBots
-HemoBots opens the website "prosangue.sp.gov.br" and gets some informations.
+HemoBots opens the website and gets some informations.
 
 ##Bbot
 Bbot opens the website and provides all registered hemocenters in Brazil, after this, all hemocenters will be inserted on database.
