@@ -3,9 +3,6 @@ import BotConnections
 from bs4 import BeautifulSoup
 import urllib.request as request
 
-## python tutorial
-## http://ozgur.github.io/python-firebase/
-
 def main():
     bloodbanks = getBloodbanksDict()
     uploadBloodBank(bloodbanks)
