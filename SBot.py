@@ -27,7 +27,7 @@ def createStagesDict(title , description):
 
 def main():
     stages = []
-    data = request.urlopen("http://www.prosangue.sp.gov.br/doacao/etapasdoacao.aspx").read()
+    data = request.urlopen(BotConnections.stages_url).read()
     bsoup = BeautifulSoup(data , 'html.parser')
     itens_content_list = bsoup.find('ul' , {'class' : 'conteudoItens'})
     bsoup = BeautifulSoup(str(itens_content_list) , 'html.parser')
