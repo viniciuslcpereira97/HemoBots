@@ -1,3 +1,4 @@
+from unidecode import unidecode
 import BotConnections
 from bs4 import BeautifulSoup
 import urllib.request as request
@@ -5,21 +6,22 @@ import urllib.request as request
 ## python tutorial
 ## http://ozgur.github.io/python-firebase/
 
-bloodbanks = {}
-
 def main():
+    bloodbanks = getBloodbanksDict()
+    uploadBloodBank(bloodbanks)
 
+def getBloodbanksDict():
+    bloodbanks = {}
     site = str(request.urlopen(BotConnections.url).read())
     cidades = site.split('/><h3>&bull; ')
     cidades.pop(0)
     hemocentros = str(cidades).split('<input type="hidden"')
-    
     for i , info in enumerate(hemocentros):
         if(i > 0):
             try:
                 informacoes = info.split("</h3>") 
                 estado = informacoes[0]
-                estado = BotConnections.decode(str(estado[2:]).split("', '")[1])
+                estado = str(estado[2:]).split("', '")[1]
                 bsoup = BeautifulSoup(str(informacoes[1]) , 'html.parser')                
                 bloodbanks[estado] = (getAllStateBloodBanks(bsoup , estado))
             except Exception as e:
@@ -27,13 +29,12 @@ def main():
         else:
             try:
                 informacoes = info.split("</h3>") 
-                estado = unidecode(str(informacoes[0][2:]))
+                estado = str(informacoes[0][2:])
                 bsoup = BeautifulSoup(str(informacoes[1]) , 'html.parser')                
                 bloodbanks[estado] = getAllStateBloodBanks(bsoup , estado)
             except Exception as e:
                 print (e)
-
-    uploadBloodBank(bloodbanks)
+    return bloodbanks
 
 def createStateBloodBanksDict(bsoup):
     blood = {
@@ -50,7 +51,6 @@ def getAllStateBloodBanks(bsoup , state):
     bloodStates = []
     for hemocentro in bsoup('li'):
         bloodStates.append(createStateBloodBanksDict(hemocentro))
-        print (printBloodBankInformations(hemocentro))
     print("\n")
 
     return bloodStates
